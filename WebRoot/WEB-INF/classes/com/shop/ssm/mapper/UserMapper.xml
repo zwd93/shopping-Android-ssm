@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<mapper namespace="com.shop.ssm.mapper.UserMapper">
+
+     <!--定义sql片段  -->
+     <sql id="userWhere">
+        <if test="id!=null and id!= 0">
+             and id = #{id}
+        </if>
+        <if test="password!=null and password!=''">
+             and password = #{password}
+        </if>
+        <if test="phone!= null and phone !=''">
+             and phone = #{phone}
+        </if> 
+        <if test="username != null and username !=''">
+             and username = #{username}
+        </if> 
+        <if test="email != null and email !=''">
+            and email = #{email}
+        </if>
+     </sql>
+     <!--通过用户的属性值查询用户  -->
+     <select id="findUserBy" parameterType="com.shop.ssm.po.User" resultType="com.shop.ssm.po.User" >
+      select * from user
+      <where>
+          <include refid="userWhere"></include>
+      </where>
+     </select>
+     
+     <!-- 插入用户：在插入用户之后将自动递增的主键值添加user的id中返回 -->
+     <insert id="insertUser" parameterType="com.shop.ssm.po.User" useGeneratedKeys="true" keyProperty="id" keyColumn="id">
+         insert into user(username,password,phone) values(#{username},#{password},#{phone})
+     </insert>
+</mapper>

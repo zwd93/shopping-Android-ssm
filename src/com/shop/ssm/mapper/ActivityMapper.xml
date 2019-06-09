@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<mapper namespace="com.shop.ssm.mapper.ActivityMapper">
+
+    <resultMap type="com.shop.ssm.po.HomeResult" id="activityAndCategoriesResultMap">
+         <!-- 商品活动信息 -->
+         <id column="id" property="id"/>
+         <result column="title" property="title"/>
+         <result column="title" property="title"/>
+         <!-- 商品类别信息:一个活动对应多个类别 -->
+         <collection property="categories" ofType="com.shop.ssm.po.Categories">
+             <id column="categories_id" property="id"/>
+             <result column="categories_title" property="title"/>
+              <result column="img_url" property="imgUrl"/>
+         </collection>
+    </resultMap>
+
+     <select id="selectActivityCategories" resultMap="activityAndCategoriesResultMap">
+       select activity.* ,categories.id categories_id,categories.title categories_title,categories.img_url
+       from activity,categories
+       where categories.activity_id = activity.id
+     </select>
+</mapper>
