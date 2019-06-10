@@ -14,104 +14,91 @@ Navicat MySQL Data Transfer
 Source Server         : ZWD
 Source Server Version : 50711
 Source Host           : localhost:3306
-Source Database       : mybatis
+Source Database       : shop
 
 Target Server Type    : MYSQL
 Target Server Version : 50711
 File Encoding         : 65001
 
-Date: 2019-06-10 12:16:47
+Date: 2019-06-10 12:21:50
 */
 
 SET FOREIGN_KEY_CHECKS=0;
 
 -- ----------------------------
--- Table structure for `banner`
+-- Table structure for `activity`
 -- ----------------------------
-DROP TABLE IF EXISTS `banner`;
-CREATE TABLE `banner` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `name` varchar(255) DEFAULT NULL,
-  `imgUrl` varchar(255) DEFAULT '',
-  `description` varchar(2000) DEFAULT '',
-  `备用1` varchar(255) DEFAULT NULL,
-  `备用2` varchar(255) DEFAULT NULL,
-  `备用3` varchar(255) DEFAULT NULL,
-  `备用4` varchar(255) DEFAULT NULL,
-  `备用5` varchar(255) DEFAULT NULL,
+DROP TABLE IF EXISTS `activity`;
+CREATE TABLE `activity` (
+  `id` int(11) NOT NULL AUTO_INCREMENT COMMENT '商品活动id',
+  `title` varchar(255) DEFAULT NULL COMMENT '商品活动标题',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
--- ----------------------------
--- Records of banner
--- ----------------------------
-
--- ----------------------------
--- Table structure for `items`
--- ----------------------------
-DROP TABLE IF EXISTS `items`;
-CREATE TABLE `items` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `name` varchar(32) NOT NULL COMMENT '商品名称',
-  `price` float(10,1) NOT NULL COMMENT '商品定价',
-  `detail` text COMMENT '商品描述',
-  `pic` varchar(64) DEFAULT NULL COMMENT '商品图片',
-  `createtime` datetime NOT NULL COMMENT '生产日期',
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8;
-
--- ----------------------------
--- Records of items
--- ----------------------------
-INSERT INTO `items` VALUES ('1', '台式机', '3000.0', '该电脑质量非常好！！！！', null, '2015-02-03 13:22:53');
-INSERT INTO `items` VALUES ('2', '笔记本', '6000.0', '笔记本性能好，质量好！！！！！', null, '2015-02-09 13:22:57');
-INSERT INTO `items` VALUES ('3', '背包', '200.0', '名牌背包，容量大质量好！！！！', null, '2015-02-06 13:23:02');
-
--- ----------------------------
--- Table structure for `orderdetail`
--- ----------------------------
-DROP TABLE IF EXISTS `orderdetail`;
-CREATE TABLE `orderdetail` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `orders_id` int(11) NOT NULL COMMENT '订单id',
-  `items_id` int(11) NOT NULL COMMENT '商品id',
-  `items_num` int(11) DEFAULT NULL COMMENT '商品购买数量',
-  PRIMARY KEY (`id`),
-  KEY `FK_orderdetail_1` (`orders_id`),
-  KEY `FK_orderdetail_2` (`items_id`),
-  CONSTRAINT `FK_orderdetail_1` FOREIGN KEY (`orders_id`) REFERENCES `orders` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
-  CONSTRAINT `FK_orderdetail_2` FOREIGN KEY (`items_id`) REFERENCES `items` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
 ) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
--- Records of orderdetail
+-- Records of activity
 -- ----------------------------
-INSERT INTO `orderdetail` VALUES ('1', '3', '1', '1');
-INSERT INTO `orderdetail` VALUES ('2', '3', '2', '3');
-INSERT INTO `orderdetail` VALUES ('3', '4', '3', '4');
-INSERT INTO `orderdetail` VALUES ('4', '4', '2', '3');
+INSERT INTO `activity` VALUES ('1', '超值购');
+INSERT INTO `activity` VALUES ('2', '热门活动');
+INSERT INTO `activity` VALUES ('3', '特色市场');
+INSERT INTO `activity` VALUES ('4', '大卖大卖');
+
+-- ----------------------------
+-- Table structure for `categories`
+-- ----------------------------
+DROP TABLE IF EXISTS `categories`;
+CREATE TABLE `categories` (
+  `id` int(11) NOT NULL AUTO_INCREMENT COMMENT '商品类别id',
+  `title` varchar(255) DEFAULT NULL COMMENT '商品类别图片地址',
+  `img_url` varchar(255) DEFAULT NULL,
+  `activity_id` int(11) DEFAULT NULL COMMENT '活动id',
+  PRIMARY KEY (`id`),
+  KEY `acticity_id` (`activity_id`),
+  CONSTRAINT `acticity_id` FOREIGN KEY (`activity_id`) REFERENCES `activity` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Records of categories
+-- ----------------------------
+INSERT INTO `categories` VALUES ('1', '玩转十一', 'imgs/3.jpeg', '1');
+INSERT INTO `categories` VALUES ('2', '萌动双10季', 'imgs/4.jpg', '1');
+INSERT INTO `categories` VALUES ('3', '联想品牌日', 'imgs/5.jpg', '1');
+INSERT INTO `categories` VALUES ('4', '满减专区', 'imgs/6.jpg', '2');
+INSERT INTO `categories` VALUES ('5', '钟表榜', 'imgs/7.jpg', '2');
+INSERT INTO `categories` VALUES ('6', '手机国庆礼', 'imgs/8.jpg', '2');
+INSERT INTO `categories` VALUES ('7', '品牌特卖', 'imgs/9.jpg', '3');
+INSERT INTO `categories` VALUES ('8', '品牌秀场', 'imgs/10.jpg', '3');
+INSERT INTO `categories` VALUES ('9', '最招聘', 'imgs/11.jpg', '3');
+INSERT INTO `categories` VALUES ('10', '天天特卖', 'imgs/12.jpg', '4');
+INSERT INTO `categories` VALUES ('11', '每日好店', 'imgs/13.jpg', '4');
+INSERT INTO `categories` VALUES ('12', '哇哦视频', 'imgs/14.jpg', '4');
 
 -- ----------------------------
 -- Table structure for `orders`
 -- ----------------------------
 DROP TABLE IF EXISTS `orders`;
 CREATE TABLE `orders` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `user_id` int(11) NOT NULL COMMENT '下单用户id',
-  `number` varchar(32) NOT NULL COMMENT '订单号',
-  `createtime` datetime NOT NULL COMMENT '创建订单时间',
-  `note` varchar(100) DEFAULT NULL COMMENT '备注',
+  `id` int(11) NOT NULL AUTO_INCREMENT COMMENT '订单id',
+  `userid` int(11) DEFAULT NULL COMMENT '用户id',
+  `productid` int(11) DEFAULT NULL COMMENT '产品id',
+  `statuscode` int(11) DEFAULT NULL COMMENT '状态代码',
+  `useraddress` varchar(255) DEFAULT NULL COMMENT '收货地址',
+  `submittime` date DEFAULT NULL COMMENT '购买日期',
+  `备用1` varchar(255) DEFAULT NULL,
+  `备用2` varchar(255) DEFAULT NULL,
+  `备用3` varchar(255) DEFAULT NULL,
+  `备用4` varchar(255) DEFAULT NULL,
+  `备用5` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`id`),
-  KEY `FK_orders_1` (`user_id`),
-  CONSTRAINT `FK_orders_id` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8;
+  KEY `productid` (`productid`),
+  KEY `userid` (`userid`),
+  CONSTRAINT `productid` FOREIGN KEY (`productid`) REFERENCES `product` (`id`),
+  CONSTRAINT `userid` FOREIGN KEY (`userid`) REFERENCES `user` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of orders
 -- ----------------------------
-INSERT INTO `orders` VALUES ('3', '1', '1000010', '2015-02-04 13:22:35', null);
-INSERT INTO `orders` VALUES ('4', '1', '1000011', '2015-02-03 13:22:41', null);
-INSERT INTO `orders` VALUES ('5', '10', '1000012', '2015-02-12 16:13:23', null);
 
 -- ----------------------------
 -- Table structure for `product`
@@ -120,20 +107,50 @@ DROP TABLE IF EXISTS `product`;
 CREATE TABLE `product` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(255) DEFAULT NULL,
-  `price` float(11,0) DEFAULT NULL,
-  `description` varchar(2000) DEFAULT NULL,
+  `price` float DEFAULT NULL,
+  `description` varchar(255) DEFAULT NULL,
   `imgUrl` varchar(255) DEFAULT NULL,
   `count` int(11) DEFAULT NULL,
+  `categories_id` int(11) DEFAULT NULL,
   `备用1` date DEFAULT NULL,
   `备用2` varchar(255) DEFAULT NULL,
   `备用3` varchar(255) DEFAULT NULL,
   `备用4` varchar(255) DEFAULT NULL,
   `备用5` varchar(255) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `categories_id` (`categories_id`),
+  CONSTRAINT `categories_id` FOREIGN KEY (`categories_id`) REFERENCES `categories` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Records of product
+-- ----------------------------
+INSERT INTO `product` VALUES ('1', '小米饼', '12', '好吃不贵', 'imgs/15.jpg', null, '1', null, null, null, null, null);
+INSERT INTO `product` VALUES ('2', '西兰菜花', '10', '喔哈哈哈哈', 'imgs/16.jpg', null, '2', null, null, null, null, null);
+INSERT INTO `product` VALUES ('3', '鸡爪', '5', '泡椒鸡爪', 'imgs/17.jpg', null, '3', null, null, null, null, null);
+INSERT INTO `product` VALUES ('4', '洛基亚', '1000', '好看耐摔', 'imgs/18.jpg', null, '4', null, null, null, null, null);
+INSERT INTO `product` VALUES ('5', 'OPPO', '3400', '照亮你的美', 'imgs/19.jpg', null, '5', null, null, null, null, null);
+INSERT INTO `product` VALUES ('6', '英语六级考试卷', '34', '六级', 'imgs/20.jpg', null, '6', null, null, null, null, null);
+INSERT INTO `product` VALUES ('7', '英语四级考试卷', '35', '四级', 'imgs/21.jpg', null, '7', null, null, null, null, null);
+INSERT INTO `product` VALUES ('8', '老干妈', '10', '贵州最美', 'imgs/22.jpg', null, '8', null, null, null, null, null);
+INSERT INTO `product` VALUES ('9', 'Lenovo ideapad 710s', '2200', '笔记本', 'imgs/24.jpg', null, '9', null, null, null, null, null);
+INSERT INTO `product` VALUES ('10', '法式方领复古上衣', '99', '复古女郎', 'imgs/23.jpg', null, '10', null, null, null, null, null);
+INSERT INTO `product` VALUES ('11', '短袖洋气T恤', '99', '短袖', 'imgs/25.jpg', null, '11', null, null, null, null, null);
+INSERT INTO `product` VALUES ('12', '很仙的毛衣', '139', '秒变高挑女神', 'imgs/26.jpg', null, '12', null, null, null, null, null);
+
+-- ----------------------------
+-- Table structure for `stutas`
+-- ----------------------------
+DROP TABLE IF EXISTS `stutas`;
+CREATE TABLE `stutas` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `meaning` varchar(255) DEFAULT NULL COMMENT '状态含义',
+  `statuscode` int(11) DEFAULT NULL COMMENT '状态代码',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- ----------------------------
--- Records of product
+-- Records of stutas
 -- ----------------------------
 
 -- ----------------------------
@@ -142,24 +159,29 @@ CREATE TABLE `product` (
 DROP TABLE IF EXISTS `user`;
 CREATE TABLE `user` (
   `id` int(11) NOT NULL AUTO_INCREMENT COMMENT '用户id',
-  `username` varchar(255) NOT NULL COMMENT '用户名称',
-  `password` varchar(255) NOT NULL COMMENT '密码',
-  `logo_url` char(255) DEFAULT '' COMMENT '用户头像',
+  `username` varchar(255) DEFAULT NULL COMMENT '用户名称',
+  `password` varchar(255) DEFAULT NULL COMMENT '密码',
+  `logo_url` char(255) DEFAULT NULL COMMENT '用户头像',
   `phone` varchar(255) DEFAULT NULL COMMENT '电话号码',
-  `email` varchar(255) NOT NULL DEFAULT '' COMMENT '电子邮箱',
+  `email` varchar(255) DEFAULT NULL COMMENT '电子邮箱',
   `备用1` date DEFAULT NULL,
   `备用2` float DEFAULT NULL,
   `备用3` varchar(255) DEFAULT NULL,
   `备用4` varchar(255) DEFAULT NULL,
   `备用5` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of user
 -- ----------------------------
 INSERT INTO `user` VALUES ('1', 'admin', 'admin123', '', 'admin', '', null, null, null, null, null);
-INSERT INTO `user` VALUES ('2', '123', '123456', '', '18900000000', '', null, null, null, null, null);
+INSERT INTO `user` VALUES ('2', '123', '123456', null, '18900000000', null, null, null, null, null, null);
+INSERT INTO `user` VALUES ('3', '123', '123456', null, '1890000000', null, null, null, null, null, null);
+INSERT INTO `user` VALUES ('4', 'aaa', '123456', null, '15300000000', null, null, null, null, null, null);
+INSERT INTO `user` VALUES ('5', 'police', '110', null, '110', null, null, null, null, null, null);
+INSERT INTO `user` VALUES ('6', 'hospital', '120', null, '120', null, null, null, null, null, null);
+INSERT INTO `user` VALUES ('7', 'aaa', '123456', null, '123456', null, null, null, null, null, null);
 
 
 ```
