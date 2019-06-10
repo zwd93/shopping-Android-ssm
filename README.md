@@ -5,3 +5,4 @@
   + MySql 5.7
   + JDK1.7
   + Spring3.2.0 + Mybatis3.2.7
+  + Tomcat8.0.50
